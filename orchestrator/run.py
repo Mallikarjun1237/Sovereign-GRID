@@ -1,4 +1,5 @@
 import asyncio
+import os
 import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -8,6 +9,11 @@ from app.routes.nodes import router as node_router
 from app.routes.jobs import router as job_router
 from app.routes.tasks import router as task_router
 from app.heartbeat_watcher import watch_node_heartbeats
+from app.routes.ws import router as ws_router
+
+APP_HOST = os.getenv("APP_HOST", "0.0.0.0")
+APP_PORT = int(os.getenv("APP_PORT", "8000"))
+APP_RELOAD = os.getenv("APP_RELOAD", "0").lower() in {"1", "true", "yes", "on"}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -32,6 +38,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(ws_router)
 app.include_router(node_router)
 app.include_router(job_router)
 app.include_router(task_router)
@@ -41,4 +48,6 @@ async def health_check():
     return {"status": "ok", "db": "connected"}
 
 if __name__ == "__main__":
-    uvicorn.run("run:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("run:app", host=APP_HOST, port=APP_PORT, reload=APP_RELOAD)
+
+

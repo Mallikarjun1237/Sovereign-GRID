@@ -90,7 +90,6 @@ async def get_job_status(job_id: str, db: AsyncSession = Depends(get_db)):
         created_at=job.created_at
     )
 
-
 @router.get("/{job_id}/results")
 async def get_job_results(job_id: str, db: AsyncSession = Depends(get_db)):
     """Fetches all completed task outputs for a given job."""

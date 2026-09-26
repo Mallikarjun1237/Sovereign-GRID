@@ -60,6 +60,17 @@ class TaskDetailResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+# class JobResponse(BaseModel):
+#     id: str
+#     title: str
+#     status: JobStatus
+#     total_tasks: int
+#     completed_tasks: int
+#     created_at: datetime
+#     tasks: Optional[List[TaskDetailResponse]] = None
+
+#     model_config = ConfigDict(from_attributes=True)
+
 class JobResponse(BaseModel):
     id: str
     title: str
@@ -67,6 +78,5 @@ class JobResponse(BaseModel):
     total_tasks: int
     completed_tasks: int
     created_at: datetime
-    tasks: Optional[List[TaskDetailResponse]] = None
 
     model_config = ConfigDict(from_attributes=True)
