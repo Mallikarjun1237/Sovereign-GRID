@@ -1,4 +1,5 @@
 .env
+worker/.worker_id
 node_modules/
 __pycache__/
 .venv/
