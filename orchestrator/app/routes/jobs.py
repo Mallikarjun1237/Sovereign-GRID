@@ -89,3 +89,26 @@ async def get_job_status(job_id: str, db: AsyncSession = Depends(get_db)):
         completed_tasks=job.completed_tasks,
         created_at=job.created_at
     )
+
+
+@router.get("/{job_id}/results")
+async def get_job_results(job_id: str, db: AsyncSession = Depends(get_db)):
+    """Fetches all completed task outputs for a given job."""
+    tasks_res = await db.execute(
+        select(TaskModel)
+        .where(TaskModel.job_id == job_id)
+        .order_by(TaskModel.id.asc())
+    )
+    tasks = tasks_res.scalars().all()
+    if not tasks:
+        raise HTTPException(status_code=404, detail="No tasks found for this job")
+
+    return [
+        {
+            "task_id": t.id,
+            "prompt": t.prompt,
+            "output": t.output,
+            "status": t.status.value
+        }
+        for t in tasks
+    ]
